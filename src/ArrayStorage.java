@@ -35,7 +35,7 @@ public class ArrayStorage {
         return idFound;
     }
     /**
-     * Overriding function FINE. For case when source is string`s type
+     * Overriding function FINE. For case when source is not string`s type
      * @return index of UUID in storage
      */
     int find(Resume r) {
