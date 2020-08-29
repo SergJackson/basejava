@@ -1,3 +1,5 @@
+import static java.lang.System.arraycopy;
+
 /**
  * Array based storage for Resumes
  */
@@ -73,9 +75,7 @@ public class ArrayStorage {
      */
     Resume[] getAll() {
         Resume[] resume = new Resume[sizeStorage];
-        for (int i = 0; i < sizeStorage; i++) {
-            resume[i] = storage[i];
-        }
+        arraycopy(storage, 0, resume, 0, sizeStorage);
         return resume;
     }
 
