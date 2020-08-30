@@ -4,7 +4,7 @@ import static java.lang.System.arraycopy;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    int sizeStorage = 0;
+    private int sizeStorage = 0;
     Resume[] storage = new Resume[10000];
 
     void clear() {
@@ -15,9 +15,11 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        if (find(r) == -1) {           // it will be unique value
-            storage[sizeStorage] = r;
-            ++sizeStorage;
+        if (sizeStorage < 10000) {         // Control error "Out of range"
+            if (find(r) == -1) {           // it will be unique value
+                storage[sizeStorage] = r;
+                ++sizeStorage;
+            }
         }
     }
 
@@ -27,7 +29,7 @@ public class ArrayStorage {
     int find(String uuid) {
         int idFound = -1;
         for (int i = 0; i < sizeStorage; i++) {
-            if (storage[i].uuid == uuid) {
+            if (storage[i].uuid.equals(uuid)) {
                 idFound = i;
                 break;
             }
@@ -41,7 +43,7 @@ public class ArrayStorage {
     int find(Resume r) {
         int idFound = -1;
         for (int i = 0; i < sizeStorage; i++) {
-            if (storage[i].uuid == r.uuid) {
+            if (storage[i].uuid.equals(r.uuid)) {
                 idFound = i;
                 break;
             }
