@@ -15,10 +15,12 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        if (sizeStorage < 10000) {         // Control error "Out of range"
-            if (find(r) == -1) {           // it will be unique value
-                storage[sizeStorage] = r;
-                ++sizeStorage;
+        if (r.uuid != null) {
+            if (sizeStorage < storage.length) {   // Control error "Out of range"
+                if (find(r.uuid) == -1) {         // it will be unique value
+                    storage[sizeStorage] = r;
+                    sizeStorage++;
+                }
             }
         }
     }
@@ -27,48 +29,32 @@ public class ArrayStorage {
      * @return index of UUID in storage
      */
     int find(String uuid) {
-        int idFound = -1;
+        int index = -1;
         for (int i = 0; i < sizeStorage; i++) {
             if (storage[i].uuid.equals(uuid)) {
-                idFound = i;
+                index = i;
                 break;
             }
         }
-        return idFound;
-    }
-    /**
-     * Overriding function FINE. For case when source is not string`s type
-     * @return index of UUID in storage
-     */
-    int find(Resume r) {
-        int idFound = -1;
-        for (int i = 0; i < sizeStorage; i++) {
-            if (storage[i].uuid.equals(r.uuid)) {
-                idFound = i;
-                break;
-            }
-        }
-        return idFound;
+        return index;
     }
 
     Resume get(String uuid) {
-        int idFound = find(uuid);
-        if (idFound > -1) {
-            return storage[idFound];
-        } else {
-            return null;
+        int index = find(uuid);
+        if (index > -1) {
+            return storage[index];
         }
+        return null;
     }
 
     void delete(String uuid) {
-        int idFound = find(uuid);
-        int i;
-        if (idFound > -1) {
-            for (i = idFound; i < sizeStorage - 1; i++) {
-                storage[i] = storage[i + 1];
+        int index = find(uuid);
+        if (index > -1) {
+            if (index < sizeStorage - 1) {
+                arraycopy(storage, index + 1, storage, index, sizeStorage - (index + 1));
             }
             storage[sizeStorage - 1] = null;
-            sizeStorage = sizeStorage - 1;
+            sizeStorage--;
         }
     }
 
@@ -76,9 +62,9 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] resume = new Resume[sizeStorage];
-        arraycopy(storage, 0, resume, 0, sizeStorage);
-        return resume;
+        Resume[] resumes = new Resume[sizeStorage];
+        arraycopy(storage, 0, resumes, 0, sizeStorage);
+        return resumes;
     }
 
     int size() {
