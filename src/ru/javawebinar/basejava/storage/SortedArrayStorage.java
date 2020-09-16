@@ -11,12 +11,12 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    public void update(Resume r) {
+    public void update(Resume resume) {
 
     }
 
     @Override
-    public void save(Resume r) {
+    public void save(Resume resume) {
 
     }
 

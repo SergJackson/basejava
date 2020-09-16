@@ -14,22 +14,22 @@ public class ArrayStorage extends AbstractArrayStorage {
         size = 0;
     }
 
-    public void update(Resume r) {
-        int index = getIndex(r.getUuid());
+    public void update(Resume resume) {
+        int index = getIndex(resume.getUuid());
         if (index == -1) {
-            System.out.println("Resume " + r.getUuid() + " not exist");
+            System.out.println("Resume " + resume.getUuid() + " not exist");
         } else {
-            storage[index] = r;
+            storage[index] = resume;
         }
     }
 
-    public void save(Resume r) {
-        if (getIndex(r.getUuid()) != -1) {
-            System.out.println("Resume " + r.getUuid() + " already exist");
+    public void save(Resume resume) {
+        if (getIndex(resume.getUuid()) != -1) {
+            System.out.println("Resume " + resume.getUuid() + " already exist");
         } else if (size >= STORAGE_LIMIT) {
             System.out.println("Storage overflow");
         } else {
-            storage[size] = r;
+            storage[size] = resume;
             size++;
         }
     }
