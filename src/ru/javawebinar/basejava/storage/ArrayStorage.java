@@ -9,6 +9,7 @@ import static java.lang.System.arraycopy;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
+    @Override
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index == -1) {
@@ -18,6 +19,7 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
     }
 
+    @Override
     public void save(Resume resume) {
         if (resume.getUuid() == null) return;
         if (getIndex(resume.getUuid()) != -1) {
@@ -30,6 +32,7 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
     }
 
+    @Override
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index == -1) {
@@ -43,6 +46,7 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
     }
 
+    @Override
     protected int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (uuid.equals(storage[i].getUuid())) {

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import static java.lang.System.arraycopy;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
+
     @Override
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
