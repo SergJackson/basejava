@@ -4,8 +4,6 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
 
-import static java.lang.System.arraycopy;
-
 /**
  * Array based storage for Resumes
  */
@@ -57,9 +55,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index < 0) {
             System.out.println("Resume " + uuid + " not exist");
         } else {
-            if (index < size - 1) {
-                arraycopy(storage, index + 1, storage, index, size - (index + 1));
-            }
+            deleteResume(index);
             storage[size - 1] = null;
             size--;
         }
@@ -76,4 +72,7 @@ public abstract class AbstractArrayStorage implements Storage {
     protected abstract int getIndex(String uuid);
 
     protected abstract void insertResume(int index, Resume resume);
+
+    protected abstract void deleteResume(int index);
+
 }
