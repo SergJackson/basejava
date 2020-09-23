@@ -12,15 +12,14 @@ import java.lang.reflect.InvocationTargetException;
 
 import static ru.javawebinar.basejava.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
-public class AbstractArrayStorageTest {
+public abstract class AbstractArrayStorageTest {
 
     Storage storage;
 
     static final String UUID_1 = "uuid1";
     static final String UUID_2 = "uuid2";
     static final String UUID_3 = "uuid3";
-    static final String UUID_4 = "uuid4";
-
+    static final String DUMMY = "dummy";
 
     public AbstractArrayStorageTest(Class clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         storage = (Storage) clazz.getDeclaredConstructor().newInstance();
@@ -46,15 +45,30 @@ public class AbstractArrayStorageTest {
         Assert.assertEquals(UUID_2, storage.get(UUID_2).getUuid());
     }
 
+    @Test(expected = NotExistStorageException.class)
+    public void updateNotExists() {
+        storage.get(DUMMY);
+    }
+
     @Test
     public void save() {
-        storage.save(new Resume("uuid4"));
+        storage.save(new Resume(DUMMY));
         Assert.assertEquals(4, storage.size());
+    }
+
+    @Test(expected = ExistStorageException.class)
+    public void saveAlreadyExists() {
+        storage.save(new Resume(UUID_1));
     }
 
     @Test
     public void get() {
         Assert.assertEquals(UUID_3, storage.get(UUID_3).getUuid());
+    }
+
+    @Test(expected = NotExistStorageException.class)
+    public void getNotExists() {
+        storage.get(DUMMY);
     }
 
     @Test
@@ -63,10 +77,15 @@ public class AbstractArrayStorageTest {
         Assert.assertEquals(2, storage.size());
     }
 
+    @Test(expected = NotExistStorageException.class)
+    public void deleteNotExists() {
+        storage.delete(DUMMY);
+    }
+
     @Test
     public void getAll() {
         Resume[] resumes = {new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_3)};
-        Assert.assertEquals(resumes, storage.getAll());
+        Assert.assertArrayEquals(resumes, storage.getAll());
     }
 
     @Test
@@ -74,23 +93,21 @@ public class AbstractArrayStorageTest {
         Assert.assertEquals(3, storage.size());
     }
 
-    @Test(expected = NotExistStorageException.class)
-    public void getNotExists() {
-        storage.get("dummy");
-    }
-
-    @Test(expected = ExistStorageException.class)
-    public void getAlreadyExists() {
-        storage.save(new Resume(UUID_1));
-    }
-
-    @Test(expected = StorageException.class)
+    @Test //(expected = StorageException.class)
     public void getOverflow() {
-        for (int i = 3; i < STORAGE_LIMIT; i++) {
-            Resume resume = new Resume("uuid" + Integer.toString(i + 1));
-            storage.save(resume);
+        try {
+            for (int i = 3; i < STORAGE_LIMIT; i++) {                                   // Error if i < 3
+                Resume resume = new Resume("uuid" + Integer.toString(i + 1));
+                storage.save(resume);
+            }
+        } catch (Exception e) {
+            Assert.fail("Error has been before stop filling array");
         }
-        storage.save(new Resume("uuid10001"));
+        try {
+            storage.save(new Resume("uuid10001"));
+        } catch (StorageException e) {
+            Assert.assertEquals("Storage overflow", e.getMessage());
+        }
     }
 
 }
