@@ -2,18 +2,17 @@ package ru.javawebinar.basejava.storage;
 
 import org.junit.Assert;
 import org.junit.Test;
-import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import static ru.javawebinar.basejava.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
-public class SortedArrayStorageTest extends AbstractArrayStorageTest {
+public class ListStorageTest extends AbstractArrayStorageTest {
 
-    public SortedArrayStorageTest() {
-        super(new SortedArrayStorage());
+    public ListStorageTest() {
+        super(new ListStorage());
     }
 
-    @Test(expected = StorageException.class)
+    @Test
     public void getOverflow() {
         try {
             for (int i = 3; i < STORAGE_LIMIT; i++) {                                   // Error if i < 3

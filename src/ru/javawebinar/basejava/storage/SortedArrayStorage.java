@@ -23,7 +23,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void deleteResume(int index) {
+    protected void deleteResumeFromArray(int index) {
         arraycopy(storage, index + 1, storage, index, size - (index + 1));
     }
 
