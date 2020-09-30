@@ -3,23 +3,31 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 public class ListStorage extends AbstractStorage {
 
-    Collection<Resume> storage = new ArrayList<>();
+    List<Resume> storage = new ArrayList<>();
+
+    public int size() {
+        return storage.size();
+    }
+
+    public void clear() {
+        storage.clear();
+    }
+
+    public Resume[] getAll() {
+        Resume[] resumes = new Resume[storage.size()];
+        return storage.toArray(resumes);
+    }
 
     @Override
     protected int getIndex(String uuid) {
-        int index = -1;
-        Iterator<Resume> iterator = storage.iterator();
-        while (iterator.hasNext()) {
-            index++;
-            Resume resume = iterator.next();
+        for (Resume resume : storage) {
             if (Objects.equals(resume.getUuid(), uuid)) {
-                return index;
+                return storage.indexOf(resume);
             }
         }
         return -1;
@@ -32,45 +40,17 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected void deleteResume(int index) {
-        Resume resume = getResume(index);
-        storage.remove(resume);
-    }
-
-    @Override
-    protected void clearStorage() {
-        storage.clear();
+        storage.remove(index);
     }
 
     @Override
     protected void updateResume(int index, Resume resume) {
-        storage.remove(resume);
-        storage.add(resume);
-    }
-
-    @Override
-    protected boolean checkStorageLimit() {
-        return true;
+        storage.set(index, resume);
     }
 
     @Override
     protected Resume getResume(int index) {
-        int position = -1;
-        Iterator<Resume> iterator = storage.iterator();
-        while (iterator.hasNext()) {
-            position++;
-            if (position == index) {
-                return iterator.next();
-            }
-            iterator.next();
-        }
-        return null;
-    }
-
-    @Override
-    protected Resume[] getAllResume() {
-        Resume[] resumes = new Resume[size];
-        storage.toArray(resumes);
-        return resumes;
+        return storage.get(index);
     }
 
 }

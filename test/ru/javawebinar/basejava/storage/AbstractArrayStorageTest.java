@@ -91,6 +91,4 @@ public abstract class AbstractArrayStorageTest {
         Assert.assertEquals(3, storage.size());
     }
 
-    public abstract void getOverflow();
-
 }

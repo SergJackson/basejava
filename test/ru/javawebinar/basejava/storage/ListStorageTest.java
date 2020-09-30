@@ -12,10 +12,10 @@ public class ListStorageTest extends AbstractArrayStorageTest {
         super(new ListStorage());
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void getOverflow() {
         try {
-            for (int i = 3; i < STORAGE_LIMIT; i++) {                                   // Error if i < 3
+            for (int i = 3; i < STORAGE_LIMIT; i++) {
                 Resume expectedResumes = new Resume("uuid" + Integer.toString(i + 1));
                 storage.save(expectedResumes);
             }
