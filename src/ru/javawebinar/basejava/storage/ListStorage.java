@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class ListStorage extends AbstractStorage {
 
-    List<Resume> storage = new ArrayList<>();
+    private List<Resume> storage = new ArrayList<>();
 
     public int size() {
         return storage.size();

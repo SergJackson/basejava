@@ -45,11 +45,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
-        insertResumeFromArray(index, resume);
+        insertResumeToArray(index, resume);
         size++;
     }
 
-    protected abstract void insertResumeFromArray(int index, Resume resume);
+    protected abstract void insertResumeToArray(int index, Resume resume);
 
     protected abstract void deleteResumeFromArray(int index);
 

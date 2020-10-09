@@ -12,7 +12,7 @@ public class ListStorageTest extends AbstractArrayStorageTest {
         super(new ListStorage());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000) //As an experiment
     public void getOverflow() {
         try {
             for (int i = 3; i < STORAGE_LIMIT; i++) {
