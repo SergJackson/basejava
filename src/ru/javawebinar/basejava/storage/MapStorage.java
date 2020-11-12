@@ -28,27 +28,27 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected boolean isExists(Object searchKey) {
-        return storage.containsKey(searchKey);
+        return storage.containsKey(searchKey.toString());
     }
 
     @Override
     protected void saveResume(Object key, Resume resume) {
-        storage.put((String) key, resume);
+        storage.put(key.toString(), resume);
     }
 
     @Override
     protected void deleteResume(Object key) {
-        storage.remove(key);
+        storage.remove(key.toString());
     }
 
     @Override
     protected void updateResume(Object key, Resume resume) {
-        storage.replace((String) key, resume);
+        storage.replace(key.toString(), resume);
     }
 
     @Override
     protected Resume getResume(Object key) {
-        return storage.get(key);
+        return storage.get(key.toString());
     }
 
 }
