@@ -4,7 +4,6 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ListStorage extends AbstractStorage {
 
@@ -25,17 +24,13 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Integer getSearchKey(String uuid) {
-        for (Resume resume : storage) {
-            if (Objects.equals(resume.getUuid(), uuid)) {
-                return storage.indexOf(resume);
-            }
-        }
-        return -1;
+        Resume resume = new Resume(uuid);
+        return storage.indexOf(resume);
     }
 
     @Override
     protected boolean isExists(Object index) {
-        return (Integer) index > 0 && (Integer) index < storage.size();
+        return (Integer) index > -1;
     }
 
     @Override

@@ -55,7 +55,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected boolean isExists(Object index) {
-        return (Integer) index > -1 && (Integer) index < size;
+        return (Integer) index > -1;
     }
 
     protected abstract void insertResumeToArray(int index, Resume resume);

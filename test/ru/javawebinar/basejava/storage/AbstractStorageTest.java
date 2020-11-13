@@ -7,7 +7,7 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-public class AbstractStorageTest {
+public abstract class AbstractStorageTest {
 
     Storage storage;
 
@@ -65,8 +65,18 @@ public class AbstractStorageTest {
     }
 
     @Test(expected = ExistStorageException.class)
-    public void saveAlreadyExists() {
+    public void saveAlreadyExistsFirst() {
         storage.save(RESUME_1);
+    }
+
+    @Test(expected = ExistStorageException.class)
+    public void saveAlreadyExistsSecond() {
+        storage.save(RESUME_2);
+    }
+
+    @Test(expected = ExistStorageException.class)
+    public void saveAlreadyExistsThird() {
+        storage.save(RESUME_3);
     }
 
     @Test
