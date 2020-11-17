@@ -5,6 +5,9 @@ import org.junit.Test;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static ru.javawebinar.basejava.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
@@ -14,8 +17,18 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
         super(storage);
     }
 
+    @Test
+    public void getAllSorted() {
+        List<Resume> checkList = new ArrayList<>();
+        checkList.add(RESUME_1);
+        checkList.add(RESUME_2);
+        checkList.add(RESUME_3);
+        List<Resume> actualList = storage.getAllSorted();
+        Assert.assertEquals(checkList, actualList);
+    }
+
     @Test(expected = StorageException.class)
-    public void getOverflow() {
+    public void saveOverflow() {
         try {
             for (int i = 3; i < STORAGE_LIMIT; i++) {                                   // Error if i < 3
                 Resume expectedResumes = new Resume("uuid" + Integer.toString(i + 1));

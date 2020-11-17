@@ -6,10 +6,9 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
 
-public class MapStorageTest extends AbstractStorageTest {
-
-    public MapStorageTest() {
-        super(new MapStorage());
+public class MapResumeStorageTest extends AbstractStorageTest {
+    public MapResumeStorageTest() {
+        super(new MapResumeStorage());
     }
 
     @Test

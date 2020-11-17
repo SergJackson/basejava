@@ -4,6 +4,7 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class ListStorage extends AbstractStorage {
 
@@ -23,9 +24,13 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
+    protected void getAllResume(List<Resume> list) {
+        list.retainAll(storage);
+    }
+
+    @Override
     protected Integer getSearchKey(String uuid) {
-        Resume resume = new Resume(uuid);
-        return storage.indexOf(resume);
+        return IntStream.range(0, storage.size()).filter(index -> storage.get(index).getUuid().equals(uuid)).findFirst().orElse(-1);
     }
 
     @Override
