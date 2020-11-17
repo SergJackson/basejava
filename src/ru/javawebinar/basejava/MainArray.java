@@ -72,9 +72,13 @@ public class MainArray {
         if (all.length == 0) {
             System.out.println("Empty");
         } else {
-            for (Resume resume : all) {
-                System.out.println(resume);
+//            for (Resume resume : all) {
+//                System.out.println(resume);
+//            }
+            for (Resume r : ARRAY_STORAGE.getAllSorted()) {
+                System.out.println(r.getUuid() + " : " + r.getFullName());
             }
+
         }
         System.out.println("----------------------------");
     }
