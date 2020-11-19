@@ -35,13 +35,13 @@ public class MainArray {
                     System.out.println(ARRAY_STORAGE.size());
                     break;
                 case "save":
-                    resume = new Resume();
+                    resume = new Resume("");
                     resume.setUuid(uuid);
                     ARRAY_STORAGE.save(resume);
                     printAll();
                     break;
                 case "update":
-                    resume = new Resume();
+                    resume = new Resume("");
                     resume.setUuid(uuid);
                     ARRAY_STORAGE.update(resume);
                     printAll();
@@ -67,18 +67,14 @@ public class MainArray {
     }
 
     static void printAll() {
-        Resume[] all = ARRAY_STORAGE.getAll();
+        boolean isEmpty = true;
         System.out.println("----------------------------");
-        if (all.length == 0) {
+        for (Resume r : ARRAY_STORAGE.getAllSorted()) {
+            System.out.println(r.getUuid() + " : " + r.getFullName());
+            isEmpty = false;
+        }
+        if (isEmpty) {
             System.out.println("Empty");
-        } else {
-//            for (Resume resume : all) {
-//                System.out.println(resume);
-//            }
-            for (Resume r : ARRAY_STORAGE.getAllSorted()) {
-                System.out.println(r.getUuid() + " : " + r.getFullName());
-            }
-
         }
         System.out.println("----------------------------");
     }

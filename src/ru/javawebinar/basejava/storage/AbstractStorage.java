@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName);
+    private static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(resume -> resume.getFullName() + "~" + resume.getUuid());
 
     public void update(Resume resume) {
         Object searchKey = getSearchKeyIfExists(resume.getUuid());
