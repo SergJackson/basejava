@@ -30,7 +30,11 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Integer getSearchKey(String uuid) {
-        return IntStream.range(0, storage.size()).filter(index -> storage.get(index).getUuid().equals(uuid)).findFirst().orElse(-1);
+        return IntStream.range(0, storage.size())
+                .filter(index -> storage.get(index)
+                        .getUuid().equals(uuid))
+                .findFirst()
+                .orElse(-1);
     }
 
     @Override

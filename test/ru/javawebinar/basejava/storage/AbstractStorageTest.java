@@ -16,21 +16,16 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
 
-    private static final String FULLNAME_1 = "FullName1";
-    private static final String FULLNAME_2 = "FullName2";
-    private static final String FULLNAME_3 = "FullName3";
-    private static final String FULLNAME_4 = "FullName4";
-
     protected static final Resume RESUME_1;
     protected static final Resume RESUME_2;
     protected static final Resume RESUME_3;
     protected static final Resume RESUME_4;
 
     static {
-        RESUME_1 = new Resume(UUID_1, FULLNAME_1);
-        RESUME_2 = new Resume(UUID_2, FULLNAME_2);
-        RESUME_3 = new Resume(UUID_3, FULLNAME_3);
-        RESUME_4 = new Resume(UUID_4, FULLNAME_4);
+        RESUME_1 = new Resume(UUID_1, "FullName1");
+        RESUME_2 = new Resume(UUID_2, "FullName2");
+        RESUME_3 = new Resume(UUID_3, "FullName3");
+        RESUME_4 = new Resume(UUID_4, "FullName4");
     }
 
     public AbstractStorageTest(Storage storage) {
@@ -94,12 +89,6 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistStorageException.class)
     public void deleteNotExists() {
         storage.delete(UUID_4);
-    }
-
-    @Test
-    public void getAll() {
-        Resume[] expectedResumes = {RESUME_1, RESUME_2, RESUME_3};
-        Assert.assertArrayEquals(expectedResumes, storage.getAll());
     }
 
     @Test
