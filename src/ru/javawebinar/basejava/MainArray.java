@@ -66,7 +66,7 @@ public class MainArray {
         }
     }
 
-    static void printAll() {
+    private static void printAll() {
         boolean isEmpty = true;
         System.out.println("----------------------------");
         for (Resume r : ARRAY_STORAGE.getAllSorted()) {

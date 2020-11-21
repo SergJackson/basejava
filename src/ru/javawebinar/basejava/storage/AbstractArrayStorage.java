@@ -25,8 +25,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void getAllResume(List<Resume> list) {
-        list.addAll(Arrays.asList(Arrays.copyOfRange(storage, 0, size)));
+    protected List<Resume> getAllResume() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 
     @Override
@@ -56,7 +56,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExists(Object index) {
+    protected boolean isExist(Object index) {
         return (Integer) index > -1;
     }
 

@@ -2,8 +2,8 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,18 +19,9 @@ public class MapResumeStorage extends AbstractStorage {
         storage.clear();
     }
 
-    public Resume[] getAll() {
-        Resume[] resumes = new Resume[storage.size()];
-        return storage.values().toArray(resumes);
-    }
-
     @Override
-    protected void getAllResume(List<Resume> list) {
-        Iterator<Map.Entry<String, Resume>> iterator = storage.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Resume> entry = iterator.next();
-            list.add(entry.getValue());
-        }
+    protected List<Resume> getAllResume() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override
@@ -39,7 +30,7 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExists(Object searchKey) {
+    protected boolean isExist(Object searchKey) {
         Resume resume = (Resume) searchKey;
         return storage.containsValue(resume);
     }
@@ -61,7 +52,7 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected Resume getResume(Object key) {
-        return storage.get(((Resume) key).getUuid());
+        return (Resume) key;
     }
 
 }

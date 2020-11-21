@@ -18,27 +18,21 @@ public class ListStorage extends AbstractStorage {
         storage.clear();
     }
 
-    public Resume[] getAll() {
-        Resume[] resumes = new Resume[storage.size()];
-        return storage.toArray(resumes);
-    }
-
     @Override
-    protected void getAllResume(List<Resume> list) {
-        list.retainAll(storage);
+    protected List<Resume> getAllResume() {
+        return storage;
     }
 
     @Override
     protected Integer getSearchKey(String uuid) {
         return IntStream.range(0, storage.size())
-                .filter(index -> storage.get(index)
-                        .getUuid().equals(uuid))
+                .filter(index -> storage.get(index).getUuid().equals(uuid))
                 .findFirst()
                 .orElse(-1);
     }
 
     @Override
-    protected boolean isExists(Object index) {
+    protected boolean isExist(Object index) {
         return (Integer) index > -1;
     }
 
