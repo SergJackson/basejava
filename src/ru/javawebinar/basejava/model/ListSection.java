@@ -1,10 +1,8 @@
 package ru.javawebinar.basejava.model;
 
-import com.sun.deploy.util.StringUtils;
-
 import java.util.List;
 
-public class ListSection extends Section {
+public class ListSection extends AbstractSection {
 
     private final List<String> content;
 
@@ -35,6 +33,6 @@ public class ListSection extends Section {
 
     @Override
     public String toString() {
-        return " - " + StringUtils.join(content, "\n - ");
+        return " - " + String.join("\n - ", content);
     }
 }

@@ -2,20 +2,15 @@ package ru.javawebinar.basejava.model;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
-/**
- * ru.javawebinar.basejava.model.Resume class
- */
 public class Resume implements Comparable<Resume> {
-
 
     private String uuid;
     private String fullName;
 
     private Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    private Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
+    private Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -47,7 +42,7 @@ public class Resume implements Comparable<Resume> {
     }
 
 
-    public Section getSection(SectionType sectionTypeType) {
+    public AbstractSection getSection(SectionType sectionTypeType) {
         return sections.get(sectionTypeType);
     }
 
@@ -55,23 +50,30 @@ public class Resume implements Comparable<Resume> {
         this.contacts.put(contactType, contact);
     }
 
-    public void setSection(SectionType sectionType, Section section) {
+    public void setSection(SectionType sectionType, AbstractSection section) {
         this.sections.put(sectionType, section);
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Resume resume = (Resume) o;
-        return Objects.equals(uuid, resume.uuid) &&
-                Objects.equals(fullName, resume.fullName);
+
+        if (!uuid.equals(resume.uuid)) return false;
+        if (!fullName.equals(resume.fullName)) return false;
+        if (contacts != null ? !contacts.equals(resume.contacts) : resume.contacts != null) return false;
+        return sections != null ? sections.equals(resume.sections) : resume.sections == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, fullName);
+        int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + (contacts != null ? contacts.hashCode() : 0);
+        result = 31 * result + (sections != null ? sections.hashCode() : 0);
+        return result;
     }
 
     @Override

@@ -2,7 +2,7 @@ package ru.javawebinar.basejava.model;
 
 import java.util.List;
 
-public class OrganizationSection extends Section {
+public class OrganizationSection extends AbstractSection {
 
     private final List<Experience> content;
 

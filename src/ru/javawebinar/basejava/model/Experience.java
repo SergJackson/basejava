@@ -8,6 +8,15 @@ public class Experience {
     private String dateFinish;
     private String info;
 
+    public Experience(String company, String www, String title, String dateStart, String dateFinish, String info) {
+        this.company = company;
+        this.www = www;
+        this.title = title;
+        this.dateStart = dateStart;
+        this.dateFinish = dateFinish;
+        this.info = info;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -32,15 +41,6 @@ public class Experience {
         result = 31 * result + dateFinish.hashCode();
         result = 31 * result + (info != null ? info.hashCode() : 0);
         return result;
-    }
-
-    public Experience(String company, String www, String title, String dateStart, String dateFinish, String info) {
-        this.company = company;
-        this.www = www;
-        this.title = title;
-        this.dateStart = dateStart;
-        this.dateFinish = dateFinish;
-        this.info = info;
     }
 
     @Override
