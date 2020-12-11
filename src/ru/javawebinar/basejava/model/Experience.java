@@ -1,16 +1,16 @@
 package ru.javawebinar.basejava.model;
 
 public class Experience {
-    private String company;
-    private String www;
+    private String companyName;
+    private String url;
     private String title;
     private String dateStart;
     private String dateFinish;
     private String info;
 
-    public Experience(String company, String www, String title, String dateStart, String dateFinish, String info) {
-        this.company = company;
-        this.www = www;
+    public Experience(String companyName, String url, String title, String dateStart, String dateFinish, String info) {
+        this.companyName = companyName;
+        this.url = url;
         this.title = title;
         this.dateStart = dateStart;
         this.dateFinish = dateFinish;
@@ -24,8 +24,8 @@ public class Experience {
 
         Experience that = (Experience) o;
 
-        if (!company.equals(that.company)) return false;
-        if (www != null ? !www.equals(that.www) : that.www != null) return false;
+        if (!companyName.equals(that.companyName)) return false;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (!title.equals(that.title)) return false;
         if (!dateStart.equals(that.dateStart)) return false;
         if (!dateFinish.equals(that.dateFinish)) return false;
@@ -34,8 +34,8 @@ public class Experience {
 
     @Override
     public int hashCode() {
-        int result = company.hashCode();
-        result = 31 * result + (www != null ? www.hashCode() : 0);
+        int result = companyName.hashCode();
+        result = 31 * result + (url != null ? url.hashCode() : 0);
         result = 31 * result + title.hashCode();
         result = 31 * result + dateStart.hashCode();
         result = 31 * result + dateFinish.hashCode();
@@ -45,7 +45,7 @@ public class Experience {
 
     @Override
     public String toString() {
-        return "\n" + company + " : " + www + "\n" +
+        return "\n" + companyName + " : " + url + "\n" +
                 dateStart + " - " + dateFinish + " " + title + "\n" +
                 info + "\n";
     }

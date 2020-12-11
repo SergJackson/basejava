@@ -5,7 +5,6 @@ public class StringSection extends AbstractSection {
     private final String content;
 
     public StringSection(String content) {
-
         this.content = content;
     }
 

@@ -7,7 +7,6 @@ public class OrganizationSection extends AbstractSection {
     private final List<Experience> content;
 
     public OrganizationSection(List<Experience> content) {
-
         this.content = content;
     }
 
