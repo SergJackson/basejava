@@ -5,6 +5,7 @@ import ru.javawebinar.basejava.storage.MapResumeStorage;
 import ru.javawebinar.basejava.storage.Storage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 /**
@@ -18,11 +19,11 @@ public class ResumeTestData {
         // Fill contacts
         resume.setContact(ContactType.PHONE, "+7(921) 855-0482");
         resume.setContact(ContactType.SKYPE, "grigory.kislin");
-        resume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        resume.setContact(ContactType.MAIL, "gkislin@yandex.ru");
         resume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
         resume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
-        resume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-        resume.setContact(ContactType.WWW, "http://gkislin.ru/");
+        resume.setContact(ContactType.STATCKOVERFLOW, "https://stackoverflow.com/users/548473");
+        resume.setContact(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
         // Fill contents
         resume.setSection(
@@ -73,65 +74,65 @@ public class ResumeTestData {
                         new Experience(
                                 "Java Online Projects",
                                 "http://javaops.ru/",
+                                LocalDate.of(2013,10, 1),
+                                LocalDate.now(),
                                 "Автор проекта.",
-                                "10/2013",
-                                "Сейчас",
                                 "Создание, организация и проведение Java онлайн проектов и стажировок."
                         ),
                         new Experience(
                                 "Wrike",
                                 "https://www.wrike.com/",
+                                LocalDate.of(2014,10,1),
+                                LocalDate.of(2016,1,1),
                                 "Старший разработчик (backend)",
-                                "10/2014",
-                                "01/2016",
                                 "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."
                         ),
                         new Experience(
                                 "RIT Center",
                                 "",
+                                LocalDate.of(2012,4,1),
+                                LocalDate.of(2014,10,1),
                                 "Java архитектор",
-                                "04/2012",
-                                "10/2014",
                                 "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python."
                         ),
                         new Experience(
                                 "Luxoft (Deutsche Bank)",
                                 "http://www.luxoft.ru/",
+                                LocalDate.of(2010,12,1),
+                                LocalDate.of(2012,4,1),
                                 "Ведущий программист",
-                                "12/2010",
-                                "04/2012",
                                 "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. Реализация RIA-приложения для администрирования, мониторинга и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5."
                         ),
                         new Experience(
                                 "Yota",
                                 "https://www.yota.ru/",
+                                LocalDate.of(2008,6,1),
+                                LocalDate.of(2010,12,1),
                                 "Ведущий специалист",
-                                "06/2008",
-                                "12/2010",
                                 "Дизайн и имплементация Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)"
                         ),
                         new Experience(
                                 "Enkata",
                                 "http://enkata.com/",
+                                LocalDate.of(2007,3,1),
+                                LocalDate.of(2008,6,1),
                                 "Разработчик ПО",
-                                "03/2007",
-                                "06/2008",
                                 "Реализация клиентской (Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения (OLAP, Data mining)."
                         ),
                         new Experience(
                                 "Siemens AG",
                                 "https://www.siemens.com/ru/ru/home.html",
+                                LocalDate.of(2005,1,1),
+                                LocalDate.of(2007,2,1),
                                 "Разработчик ПО",
-                                "01/2005",
-                                "02/2007",
                                 "Разработка информационной модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix)."
                         ),
                         new Experience(
                                 "Alcatel",
                                 "http://www.alcatel.ru/",
+                                LocalDate.of(1997,9,1),
+                                LocalDate.of(2005,1,1),
                                 "Инженер по аппаратному и программному тестированию",
-                                "09/1997",
-                                "01/2005",
                                 "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM)."
                         )
                 ))
@@ -142,57 +143,57 @@ public class ResumeTestData {
                         new Experience(
                                 "Coursera",
                                 "https://www.coursera.org/course/progfun",
+                                LocalDate.of(2013,3,1),
+                                LocalDate.of(2013,5,1),
                                 "\"Functional Programming Principles in Scala\" by Martin Odersky",
-                                "03/2013",
-                                "05/2013",
                                 ""
                         ),
                         new Experience(
                                 "Luxoft",
                                 "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
+                                LocalDate.of(2011,3,1),
+                                LocalDate.of(2011,4,1),
                                 "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"",
-                                "03/2011",
-                                "04/2011",
                                 ""
                         ),
                         new Experience(
                                 "Siemens AG",
                                 "http://www.siemens.ru/",
+                                LocalDate.of(2005,1,1),
+                                LocalDate.of(2005,4,1),
                                 "3 месяца обучения мобильным IN сетям (Берлин)",
-                                "01/2005",
-                                "04/2005",
                                 ""
                         ),
                         new Experience(
                                 "Alcatel",
                                 "http://www.alcatel.ru/",
+                                LocalDate.of(1997,9,1),
+                                LocalDate.of(1998,3,1),
                                 "6 месяцев обучения цифровым телефонным сетям (Москва)",
-                                "09/1997",
-                                "03/1998",
                                 ""
                         ),
                         new Experience(
                                 "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                                 "http://www.ifmo.ru/",
+                                LocalDate.of(1993,9,1),
+                                LocalDate.of(1996,7,1),
                                 "Аспирантура (программист С, С++)",
-                                "09/1993",
-                                "07/1996",
                                 ""
                         ),
                         new Experience(
                                 "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                                 "http://www.ifmo.ru/",
+                                LocalDate.of(1987,9,1),
+                                LocalDate.of(1993,7,1),
                                 "Инженер (программист Fortran, C)",
-                                "09/1987",
-                                "07/1993",
                                 ""
                         ),
                         new Experience(
                                 "Заочная физико-техническая школа при МФТИ",
                                 "http://www.school.mipt.ru/",
+                                LocalDate.of(1984,9,1),
+                                LocalDate.of(1987,6,1),
                                 "Закончил с отличием",
-                                "09/1984",
-                                "06/1987",
                                 ""
                         )
                 ))

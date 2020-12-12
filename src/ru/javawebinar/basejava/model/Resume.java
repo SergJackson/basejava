@@ -41,7 +41,6 @@ public class Resume implements Comparable<Resume> {
         return contacts.get(contactType);
     }
 
-
     public AbstractSection getSection(SectionType sectionTypeType) {
         return sections.get(sectionTypeType);
     }
@@ -78,7 +77,7 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public String toString() {
-        return uuid;
+        return uuid + '(' + fullName + ')';
     }
 
     @Override
