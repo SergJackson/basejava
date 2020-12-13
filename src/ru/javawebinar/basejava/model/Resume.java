@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Resume implements Comparable<Resume> {
-
     private String uuid;
     private String fullName;
 

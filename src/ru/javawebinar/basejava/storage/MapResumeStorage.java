@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapResumeStorage extends AbstractStorage {
+public class MapResumeStorage extends AbstractStorage<Resume> {
 
     private Map<String, Resume> storage = new HashMap<>();
 
@@ -25,34 +25,33 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
+    protected Resume getSearchKey(String uuid) {
         return storage.get(uuid);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        Resume resume = (Resume) searchKey;
-        return storage.containsValue(resume);
+    protected boolean isExist(Resume searchKey) {
+        return storage.containsValue(searchKey);
     }
 
     @Override
-    protected void saveResume(Object key, Resume resume) {
+    protected void saveResume(Resume key, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void deleteResume(Object key) {
-        storage.remove(((Resume) key).getUuid());
+    protected void deleteResume(Resume key) {
+        storage.remove((key).getUuid());
     }
 
     @Override
-    protected void updateResume(Object key, Resume resume) {
-        storage.replace(((Resume) key).getUuid(), resume);
+    protected void updateResume(Resume key, Resume resume) {
+        storage.replace((key).getUuid(), resume);
     }
 
     @Override
-    protected Resume getResume(Object key) {
-        return (Resume) key;
+    protected Resume getResume(Resume key) {
+        return key;
     }
 
 }

@@ -1,7 +1,6 @@
 package ru.javawebinar.basejava.model;
 
 public class StringSection extends AbstractSection {
-
     private final String content;
 
     public StringSection(String content) {
