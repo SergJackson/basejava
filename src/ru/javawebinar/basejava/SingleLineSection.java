@@ -1,9 +1,11 @@
-package ru.javawebinar.basejava.model;
+package ru.javawebinar.basejava;
 
-public class StringSection extends AbstractSection {
+import ru.javawebinar.basejava.model.AbstractSection;
+
+public class SingleLineSection extends AbstractSection {
     private final String content;
 
-    public StringSection(String content) {
+    public SingleLineSection(String content) {
         this.content = content;
     }
 
@@ -16,7 +18,7 @@ public class StringSection extends AbstractSection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        StringSection that = (StringSection) o;
+        SingleLineSection that = (SingleLineSection) o;
 
         return content != null ? content.equals(that.content) : that.content == null;
     }
