@@ -1,7 +1,8 @@
-package ru.javawebinar.basejava.storage;
+package ru.javawebinar.basejava.storage.strategy;
 
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.storage.AbstractStorage;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,11 +12,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class PathStrategyStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
     private Strategy strategy;
 
-    protected PathStrategyStorage(String dir, Strategy strategy) {
+    public PathStorage(String dir, Strategy strategy) {
         Objects.requireNonNull(dir, "directory must not be null");
         this.strategy = strategy;
         directory = Paths.get(dir);
