@@ -1,9 +1,11 @@
-package ru.javawebinar.basejava;
-
-import ru.javawebinar.basejava.model.AbstractSection;
+package ru.javawebinar.basejava.model;
 
 public class SingleLineSection extends AbstractSection {
-    private final String content;
+    private static final long serialVersionUID = 1L;
+    private String content;
+
+    public SingleLineSection() {
+    }
 
     public SingleLineSection(String content) {
         this.content = content;

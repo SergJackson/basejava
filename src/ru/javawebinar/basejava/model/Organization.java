@@ -1,24 +1,39 @@
 package ru.javawebinar.basejava.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Link homePage;
     private List<Experience> experiences = new ArrayList<>();
 
-    public Organization(String name, String url, LocalDate startDate, LocalDate endDate, String title, String description) {
-        Objects.requireNonNull(name, "Name must not be null");
-        this.homePage = new Link(name, url);
-        addPeriodExperience(startDate, endDate, title, description);
+    public Organization() {
     }
 
-    public void addPeriodExperience(LocalDate startDate, LocalDate endDate, String title, String description) {
-        this.experiences.add(new Experience(startDate, endDate, title, description));
+    public Organization(String name, String url, Experience... experiences) {
+        this(new Link(name, url), Arrays.asList(experiences));
     }
+
+    public Link getLink() {
+        return homePage;
+    }
+
+    public List<Experience> getExperiences() {
+        return experiences;
+    }
+
+    public Organization(Link link, List<Experience> experiences) {
+        this.homePage = link;
+        this.experiences = experiences;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -27,23 +42,19 @@ public class Organization implements Serializable {
 
         Organization that = (Organization) o;
 
-        if (!homePage.equals(that.homePage)) return false;
-        return experiences.equals(that.experiences);
+        if (homePage != null ? !homePage.equals(that.homePage) : that.homePage != null) return false;
+        return experiences != null ? experiences.equals(that.experiences) : that.experiences == null;
     }
 
     @Override
     public int hashCode() {
-        int result = homePage.hashCode();
-        result = 31 * result + experiences.hashCode();
+        int result = homePage != null ? homePage.hashCode() : 0;
+        result = 31 * result + (experiences != null ? experiences.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        String result = "\n" + homePage + "\n";
-        for (Experience experience : experiences) {
-            result = result.concat(experience.toString());
-        }
-        return result;
+        return homePage + "\n" + experiences;
     }
 }
