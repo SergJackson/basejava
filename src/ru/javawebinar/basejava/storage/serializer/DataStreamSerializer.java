@@ -5,8 +5,10 @@ import ru.javawebinar.basejava.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class DataStreamSerializer implements StreamSerializer {
     private static final String NULL = "NULL";
@@ -18,16 +20,36 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : r.getContacts().entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            //for (Map.Entry<ContactType, String> entry : r.getContacts().entrySet()) {
+            //    dos.writeUTF(entry.getKey().name());
+            //    dos.writeUTF(entry.getValue());
+            //}
+            writeWithException(contacts.entrySet(), entry -> {
+                try {
+                    writeContact(dos, entry);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                //dos.writeUTF(entry.getKey().name());
+                //dos.writeUTF(entry.getValue());
+            });
             Map<SectionType, AbstractSection> sections = r.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
                 writeSection(dos, entry.getKey(), entry.getValue());
             }
         }
+    }
+
+    private <T> void writeWithException(Collection<T> collection, Consumer<T> action) {
+        for (T t : collection) {
+            action.accept(t);
+        }
+    }
+
+    private void writeContact(DataOutputStream dos, Map.Entry<ContactType, String> entry) throws IOException {
+        dos.writeUTF(entry.getKey().name());
+        dos.writeUTF(entry.getValue());
     }
 
     @Override
@@ -76,12 +98,8 @@ public class DataStreamSerializer implements StreamSerializer {
                     List<Experience> experiences = organization.getExperiences();
                     dos.writeInt(experiences.size());
                     for (Experience experience : experiences) {
-                        dos.writeInt(experience.getStartDate().getYear());
-                        dos.writeInt(experience.getStartDate().getMonthValue());
-                        dos.writeInt(experience.getStartDate().getDayOfMonth());
-                        dos.writeInt(experience.getEndDate().getYear());
-                        dos.writeInt(experience.getEndDate().getMonthValue());
-                        dos.writeInt(experience.getEndDate().getDayOfMonth());
+                        writeDate(dos, experience.getStartDate());
+                        writeDate(dos, experience.getEndDate());
                         dos.writeUTF(experience.getTitle());
                         dos.writeUTF(nullToString(experience.getDescription()));
                     }
@@ -118,10 +136,10 @@ public class DataStreamSerializer implements StreamSerializer {
                     int count = dis.readInt();
                     for (int x = 0; x < count; x++) {
                         experiences.add(new Experience(
-                                LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt()), // StartDate
-                                LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt()), // EndDate
-                                dis.readUTF(),                                             // Title
-                                stringToNull(dis.readUTF())                                // Descriptions
+                                readDate(dis),              // StartDate
+                                readDate(dis),              // EndDate
+                                dis.readUTF(),              // Title
+                                stringToNull(dis.readUTF()) // Descriptions
                         ));
                     }
                     organizations.add(new Organization(link, experiences));
@@ -133,16 +151,20 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     private String nullToString(String string) {
-        if (string == null) {
-            return NULL;
-        }
-        return string;
+        return string == null ? NULL : string;
     }
 
     private String stringToNull(String string) {
-        if (string.equals(NULL)) {
-            return null;
-        }
-        return string;
+        return string.equals(NULL) ? null : string;
+    }
+
+    private void writeDate(DataOutputStream dos, LocalDate date) throws IOException {
+        dos.writeInt(date.getYear());
+        dos.writeInt(date.getMonthValue());
+        dos.writeInt(date.getDayOfMonth());
+    }
+
+    private LocalDate readDate(DataInputStream dis) throws IOException {
+        return LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt());
     }
 }
