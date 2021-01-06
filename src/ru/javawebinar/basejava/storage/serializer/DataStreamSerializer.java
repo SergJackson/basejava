@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
+    private static final String NULL = "NULL";
 
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
@@ -21,7 +22,9 @@ public class DataStreamSerializer implements StreamSerializer {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             }
-            for (Map.Entry<SectionType, AbstractSection> entry : r.getSections().entrySet()) {
+            Map<SectionType, AbstractSection> sections = r.getSections();
+            dos.writeInt(sections.size());
+            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
                 writeSection(dos, entry.getKey(), entry.getValue());
             }
         }
@@ -29,15 +32,17 @@ public class DataStreamSerializer implements StreamSerializer {
 
     @Override
     public Resume doRead(InputStream is) throws IOException {
+        int size;
         try (DataInputStream dis = new DataInputStream(is)) {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
+            size = dis.readInt();
             for (int i = 0; i < size; i++) {
                 resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
-            while (dis.available() > 0) {
+            size = dis.readInt();
+            for (int i = 0; i < size; i++) {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 resume.setSection(sectionType, readSection(dis, sectionType));
             }
@@ -45,87 +50,99 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void writeSection(DataOutputStream dos, SectionType sectionType, AbstractSection section) {
-        try {
-            dos.writeUTF(sectionType.name());
-            switch (sectionType) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    dos.writeUTF(((SingleLineSection) section).getContent());
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    List<String> list = ((ListSection) section).getContent();
-                    dos.writeInt(list.size());
-                    for (String item : list) {
-                        dos.writeUTF(item);
+    private void writeSection(DataOutputStream dos, SectionType sectionType, AbstractSection section) throws IOException {
+        dos.writeUTF(sectionType.name());
+        switch (sectionType) {
+            case PERSONAL:
+            case OBJECTIVE:
+                dos.writeUTF(((SingleLineSection) section).getContent());
+                break;
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                List<String> list = ((ListSection) section).getContent();
+                dos.writeInt(list.size());
+                for (String item : list) {
+                    dos.writeUTF(item);
+                }
+                break;
+            case EDUCATION:
+            case EXPERIENCE:
+                List<Organization> organizations = ((OrganizationSection) section).getContent();
+                dos.writeInt(organizations.size());
+                for (Organization organization : organizations) {
+                    dos.writeUTF(organization.getLink().getName());
+                    dos.writeUTF(nullToString(organization.getLink().getUrl()));
+                    List<Experience> experiences = organization.getExperiences();
+                    dos.writeInt(experiences.size());
+                    for (Experience experience : experiences) {
+                        dos.writeInt(experience.getStartDate().getYear());
+                        dos.writeInt(experience.getStartDate().getMonthValue());
+                        dos.writeInt(experience.getStartDate().getDayOfMonth());
+                        dos.writeInt(experience.getEndDate().getYear());
+                        dos.writeInt(experience.getEndDate().getMonthValue());
+                        dos.writeInt(experience.getEndDate().getDayOfMonth());
+                        dos.writeUTF(experience.getTitle());
+                        dos.writeUTF(nullToString(experience.getDescription()));
                     }
-                    break;
-                case EDUCATION:
-                case EXPERIENCE:
-                    List<Organization> organizations = ((OrganizationSection) section).getContent();
-                    dos.writeInt(organizations.size());
-                    for (Organization organization : organizations) {
-                        dos.writeUTF(organization.getLink().getName());
-                        dos.writeUTF(organization.getLink().getUrl());
-                        List<Experience> experiences = organization.getExperiences();
-                        dos.writeInt(experiences.size());
-                        for (Experience experience : experiences) {
-                            dos.writeUTF(experience.getStartDate().toString());
-                            dos.writeUTF(experience.getEndDate().toString());
-                            dos.writeUTF(experience.getTitle());
-                            dos.writeUTF(experience.getDescription());
-                        }
-                    }
-                    break;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                }
+                break;
         }
     }
 
-    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) {
+    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
         AbstractSection section = null;
         int size;
-        try {
-            switch (sectionType) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    section = new SingleLineSection(dis.readUTF());
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    size = dis.readInt();
-                    List<String> list = new ArrayList<>();
-                    for (int i = 0; i < size; i++) {
-                        list.add(dis.readUTF());
+        Link link;
+
+        switch (sectionType) {
+            case PERSONAL:
+            case OBJECTIVE:
+                section = new SingleLineSection(dis.readUTF());
+                break;
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                size = dis.readInt();
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < size; i++) {
+                    list.add(dis.readUTF());
+                }
+                section = new ListSection(list);
+                break;
+            case EDUCATION:
+            case EXPERIENCE:
+                size = dis.readInt();
+                List<Organization> organizations = new ArrayList<>();
+                for (int i = 0; i < size; i++) {
+                    link = new Link(dis.readUTF(), stringToNull(dis.readUTF()));
+                    List<Experience> experiences = new ArrayList<>();
+                    int count = dis.readInt();
+                    for (int x = 0; x < count; x++) {
+                        experiences.add(new Experience(
+                                LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt()), // StartDate
+                                LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt()), // EndDate
+                                dis.readUTF(),                                             // Title
+                                stringToNull(dis.readUTF())                                // Descriptions
+                        ));
                     }
-                    section = new ListSection(list);
-                    break;
-                case EDUCATION:
-                case EXPERIENCE:
-                    size = dis.readInt();
-                    List<Organization> organizations = new ArrayList<>();
-                    for (int i = 0; i < size; i++) {
-                        Link link = new Link(dis.readUTF(), dis.readUTF());
-                        List<Experience> experiences = new ArrayList<>();
-                        int count = dis.readInt();
-                        for (int x = 0; x < count; x++) {
-                            experiences.add(new Experience(
-                                    LocalDate.parse(dis.readUTF()), // StartDate
-                                    LocalDate.parse(dis.readUTF()), // EndDate
-                                    dis.readUTF(),                  // Title
-                                    dis.readUTF()                   // Descriptions
-                            ));
-                        }
-                        organizations.add(new Organization(link, experiences));
-                    }
-                    section = new OrganizationSection(organizations);
-                    break;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                    organizations.add(new Organization(link, experiences));
+                }
+                section = new OrganizationSection(organizations);
+                break;
         }
         return section;
+    }
+
+    private String nullToString(String string) {
+        if (string == null) {
+            return NULL;
+        }
+        return string;
+    }
+
+    private String stringToNull(String string) {
+        if (string.equals(NULL)) {
+            return null;
+        }
+        return string;
     }
 }

@@ -150,21 +150,6 @@ public class ResumeTestData {
                         )
                 )
         );
-        Organization organization = new Organization(
-                "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                "http://www.ifmo.ru/",
-                new Experience(
-                        LocalDate.of(1993, 9, 1),
-                        LocalDate.of(1996, 7, 1),
-                        "Аспирантура (программист С, С++)",
-                        ""),
-                new Experience(
-                        LocalDate.of(1987, 9, 1),
-                        LocalDate.of(1993, 7, 1),
-                        "Инженер (программист Fortran, C)",
-                        "")
-        );
-
         resume.setSection(
                 SectionType.EDUCATION,
                 new OrganizationSection(
@@ -204,15 +189,28 @@ public class ResumeTestData {
                                         "6 месяцев обучения цифровым телефонным сетям (Москва)",
                                         "")
                         ),
-                        organization,
+                        new Organization(
+                                "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
+                                "http://www.ifmo.ru/",
+                                new Experience(
+                                        LocalDate.of(1993, 9, 1),
+                                        LocalDate.of(1996, 7, 1),
+                                        "Аспирантура (программист С, С++)",
+                                        ""),
+                                new Experience(
+                                        LocalDate.of(1987, 9, 1),
+                                        LocalDate.of(1993, 7, 1),
+                                        "Инженер (программист Fortran, C)",
+                                        "")
+                        ),
                         new Organization(
                                 "Заочная физико-техническая школа при МФТИ",
-                                "http://www.school.mipt.ru/",
+                                null, //"http://www.school.mipt.ru/",
                                 new Experience(
                                         LocalDate.of(1984, 9, 1),
                                         LocalDate.of(1987, 6, 1),
                                         "Закончил с отличием",
-                                        "")
+                                        null)//"")
                         )
                 )
         );
