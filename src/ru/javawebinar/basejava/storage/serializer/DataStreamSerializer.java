@@ -70,8 +70,9 @@ public class DataStreamSerializer implements StreamSerializer {
                 List<Organization> organizations = ((OrganizationSection) section).getContent();
                 dos.writeInt(organizations.size());
                 for (Organization organization : organizations) {
-                    dos.writeUTF(organization.getLink().getName());
-                    dos.writeUTF(nullToString(organization.getLink().getUrl()));
+                    Link link = organization.getLink();
+                    dos.writeUTF(link.getName());
+                    dos.writeUTF(nullToString(link.getUrl()));
                     List<Experience> experiences = organization.getExperiences();
                     dos.writeInt(experiences.size());
                     for (Experience experience : experiences) {
@@ -92,7 +93,6 @@ public class DataStreamSerializer implements StreamSerializer {
     private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
         AbstractSection section = null;
         int size;
-        Link link;
 
         switch (sectionType) {
             case PERSONAL:
@@ -113,7 +113,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 size = dis.readInt();
                 List<Organization> organizations = new ArrayList<>();
                 for (int i = 0; i < size; i++) {
-                    link = new Link(dis.readUTF(), stringToNull(dis.readUTF()));
+                    Link link = new Link(dis.readUTF(), stringToNull(dis.readUTF()));
                     List<Experience> experiences = new ArrayList<>();
                     int count = dis.readInt();
                     for (int x = 0; x < count; x++) {
