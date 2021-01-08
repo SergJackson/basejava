@@ -7,49 +7,23 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
+
 
 public class DataStreamSerializer implements StreamSerializer {
     private static final String NULL = "NULL";
+
 
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
-            Map<ContactType, String> contacts = r.getContacts();
-            dos.writeInt(contacts.size());
-            //for (Map.Entry<ContactType, String> entry : r.getContacts().entrySet()) {
-            //    dos.writeUTF(entry.getKey().name());
-            //    dos.writeUTF(entry.getValue());
-            //}
-            writeWithException(contacts.entrySet(), entry -> {
-                try {
-                    writeContact(dos, entry);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                //dos.writeUTF(entry.getKey().name());
-                //dos.writeUTF(entry.getValue());
+            writeWithException(dos, r.getContacts().entrySet(), entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
             });
-            Map<SectionType, AbstractSection> sections = r.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
-                writeSection(dos, entry.getKey(), entry.getValue());
-            }
+            writeWithException(dos, r.getSections().entrySet(), entry -> writeSection(dos, entry.getKey(), entry.getValue()));
         }
-    }
-
-    private <T> void writeWithException(Collection<T> collection, Consumer<T> action) {
-        for (T t : collection) {
-            action.accept(t);
-        }
-    }
-
-    private void writeContact(DataOutputStream dos, Map.Entry<ContactType, String> entry) throws IOException {
-        dos.writeUTF(entry.getKey().name());
-        dos.writeUTF(entry.getValue());
     }
 
     @Override
@@ -59,15 +33,13 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+            readWithException(dis, () -> {
                 resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-            size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+            });
+            readWithException(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 resume.setSection(sectionType, readSection(dis, sectionType));
-            }
+            });
             return resume;
         }
     }
@@ -167,4 +139,29 @@ public class DataStreamSerializer implements StreamSerializer {
     private LocalDate readDate(DataInputStream dis) throws IOException {
         return LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt());
     }
+
+    private interface Writer<T> {
+        void write(T t) throws IOException;
+    }
+
+    private interface Reader {
+        void read() throws IOException;
+    }
+
+    private <T> void writeWithException(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            writer.write(t);
+        }
+    }
+
+    private void readWithException(DataInputStream dis, Reader reader) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            reader.read();
+        }
+    }
 }
+
+
+
