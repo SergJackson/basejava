@@ -12,7 +12,6 @@ import java.util.List;
 public class DataStreamSerializer implements StreamSerializer {
     private static final String NULL = "NULL";
 
-
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
