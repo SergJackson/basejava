@@ -6,15 +6,14 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 
 public class DeadLock {
-    public static final int COUNT_THREAD = 2;
-    public static Lock_A lock_a = new Lock_A("Object A initialisation");
-    public static Lock_B lock_b = new Lock_B("Object B initialisation");
+    private static String lock_a = "A";
+    private static String lock_b = "B";
 
     public static void main(String[] args) throws InterruptedException {
 
-        List<Thread> threads = new ArrayList<>(COUNT_THREAD);
-        threads.add(createThread(lock_a));
-        threads.add(createThread(lock_b));
+        List<Thread> threads = new ArrayList<>(2);
+        threads.add(createThread(lock_a, lock_b));
+        threads.add(createThread(lock_b, lock_a));
 
         for (Thread thread : threads) {
             thread.start();
@@ -22,75 +21,27 @@ public class DeadLock {
 
         sleep(5000);
         System.out.println("Thread MAIN completed");
-//        for (Thread thread : threads) {
-//            thread.interrupt();
-//        }
+
         for (Thread thread : threads) {
             System.out.println(thread.getName() + " - " + thread.getState());
         }
     }
 
-    private interface Lock {
-        void lockField(String field);
-    }
 
-    private static Thread createThread(Lock lock) {
+    private static Thread createThread(Object a, Object b) {
         return new Thread(() -> {
-            do {
-                System.out.println(Thread.currentThread().getName() + " - locking " + lock.getClass().getName());
-                lock.lockField(Thread.currentThread().getName() + ", " + Thread.currentThread().getState());
-            } while (!Thread.currentThread().isInterrupted());
-            System.out.println("Thread " + Thread.currentThread().getName() + " complite is successful");
+            synchronized (a) {
+                System.out.println(Thread.currentThread().getName() + " - locking " + a.toString());
+                //try {
+                //    sleep(500);                      // with it - 100%
+                //} catch (InterruptedException e) {
+                //    e.printStackTrace();
+                //}
+                synchronized (b) {
+                    System.out.println(Thread.currentThread().getName() + " - locking " + b.toString());
+                }
+            }
+            System.out.println(Thread.currentThread().getName() + " unlocked " + a.toString() + " & " + b.toString());
         });
     }
-
-
-    public static class Lock_A implements Lock {
-
-        private String field;
-
-        public Lock_A(String field) {
-            this.field = field;
-            System.out.println(this.field);
-        }
-
-        @Override
-        public synchronized void lockField(String field) {
-            System.out.println(Thread.currentThread().getName() + " - Calling method of object A");
-            this.field = field;
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            lock_b.lockField("Calling method of object B");
-            System.out.println(Thread.currentThread().getName() + " - unlock object A");
-        }
-
-    }
-
-    public static class Lock_B implements Lock {
-
-        private String field;
-
-        public Lock_B(String field) {
-            this.field = field;
-            System.out.println(this.field);
-        }
-
-        @Override
-        public synchronized void lockField(String field) {
-            System.out.println(Thread.currentThread().getName() + " - Calling method of object B");
-            this.field = field;
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            lock_a.lockField("Calling method of object A");
-            System.out.println(Thread.currentThread().getName() + " - unlock object B");
-        }
-
-    }
-
 }
