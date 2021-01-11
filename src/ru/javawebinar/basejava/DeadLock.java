@@ -6,12 +6,12 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 
 public class DeadLock {
-    private static String lock_a = "A";
-    private static String lock_b = "B";
 
     public static void main(String[] args) throws InterruptedException {
 
         List<Thread> threads = new ArrayList<>(2);
+        String lock_a = "A";
+        String lock_b = "B";
         threads.add(createThread(lock_a, lock_b));
         threads.add(createThread(lock_b, lock_a));
 
@@ -32,11 +32,6 @@ public class DeadLock {
         return new Thread(() -> {
             synchronized (a) {
                 System.out.println(Thread.currentThread().getName() + " - locking " + a.toString());
-                //try {
-                //    sleep(500);                      // with it - 100%
-                //} catch (InterruptedException e) {
-                //    e.printStackTrace();
-                //}
                 synchronized (b) {
                     System.out.println(Thread.currentThread().getName() + " - locking " + b.toString());
                 }
