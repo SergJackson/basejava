@@ -3,9 +3,7 @@ package ru.javawebinar.basejava;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MainStream {
 
@@ -21,16 +19,14 @@ public class MainStream {
         return Arrays.stream(values)
                 .distinct()
                 .sorted()
-                .reduce((a, b) -> a * 10 + b).orElse(0);
+                .reduce(0, (a, b) -> a * 10 + b);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        Supplier<Stream<Integer>> stream = integers::stream;
-        int sum = stream.get().mapToInt(a -> a).sum();
-
-        return stream.get().mapToInt(a -> a)
-                .filter((value) -> value % 2 == sum % 2)
+        return integers.stream().mapToInt(a -> a)
+                .filter((value) -> value % 2 == integers.stream().mapToInt(a -> a).sum() % 2)
                 .boxed()
                 .collect(Collectors.toList());
     }
+
 }
