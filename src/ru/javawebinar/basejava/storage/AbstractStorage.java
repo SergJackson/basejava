@@ -13,21 +13,25 @@ public abstract class AbstractStorage<SK> implements Storage {
     private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
     public void update(Resume resume) {
+        LOG.info("Update " + resume);
         SK searchKey = getSearchKeyIfExists(resume.getUuid());
         updateResume(searchKey, resume);
     }
 
     public void save(Resume resume) {
+        LOG.info("Save " + resume);
         SK searchKey = getSearchKeyIfNotExists(resume.getUuid());
         saveResume(searchKey, resume);
     }
 
     public Resume get(String uuid) {
+        LOG.info("Get " + uuid);
         SK searchKey = getSearchKeyIfExists(uuid);
         return getResume(searchKey);
     }
 
     public void delete(String uuid) {
+        LOG.info("Delete " + uuid);
         SK searchKey = getSearchKeyIfExists(uuid);
         deleteResume(searchKey);
     }
@@ -35,6 +39,7 @@ public abstract class AbstractStorage<SK> implements Storage {
     private SK getSearchKeyIfExists(String uuid) {
         SK searchKey = getSearchKey(uuid);
         if (!isExist(searchKey)) {
+            LOG.warning("Resume " + uuid + " not exist");
             throw new NotExistStorageException(uuid);
         }
         return searchKey;
@@ -43,12 +48,14 @@ public abstract class AbstractStorage<SK> implements Storage {
     private SK getSearchKeyIfNotExists(String uuid) {
         SK searchKey = getSearchKey(uuid);
         if (isExist(searchKey)) {
+            LOG.warning("Resume " + uuid + " already exist");
             throw new ExistStorageException(uuid);
         }
         return searchKey;
     }
 
     public List<Resume> getAllSorted() {
+        LOG.info("getAllSorted");
         List<Resume> list = getAllResume();
         Collections.sort(list);
         return list;

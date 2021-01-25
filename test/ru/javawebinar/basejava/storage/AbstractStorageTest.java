@@ -3,6 +3,7 @@ package ru.javawebinar.basejava.storage;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
@@ -13,10 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static ru.javawebinar.basejava.ResumeTestData.genResume;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("c:\\projects\\storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
     protected Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -30,10 +30,16 @@ public abstract class AbstractStorageTest {
     protected static final Resume RESUME_4;
 
     static {
+        RESUME_1 = new Resume(UUID_1, "FullName1");
+        RESUME_2 = new Resume(UUID_2, "FullName2");
+        RESUME_3 = new Resume(UUID_3, "FullName3");
+        RESUME_4 = new Resume(UUID_4, "FullName4");
+/*
         RESUME_1 = genResume(UUID_1, "FullName1");
         RESUME_2 = genResume(UUID_2, "FullName2");
         RESUME_3 = genResume(UUID_3, "FullName3");
         RESUME_4 = genResume(UUID_4, "FullName4");
+*/
     }
 
     public AbstractStorageTest(Storage storage) {
