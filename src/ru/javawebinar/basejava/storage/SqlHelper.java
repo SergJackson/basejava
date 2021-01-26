@@ -1,5 +1,6 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.sql.ConnectionFactory;
 
@@ -23,12 +24,11 @@ public class SqlHelper {
              PreparedStatement ps = connection.prepareStatement(sql)) {
             return code.exe(ps);
         } catch (SQLException e) {
+            if (e.getMessage().indexOf("duplicate key value") > 0) {
+                throw new ExistStorageException("", e);
+            }
             throw new StorageException(e);
         }
-    }
-
-    public void exe(String sql) {
-        exe(PreparedStatement::execute, sql);
     }
 
 }

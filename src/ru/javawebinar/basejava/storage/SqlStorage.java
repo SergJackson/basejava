@@ -1,14 +1,12 @@
 package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.Config;
-import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,19 +43,9 @@ public class SqlStorage implements Storage {
     public void save(Resume resume) {
         sqlHelper.exe(
                 preparedStatement -> {
-                    try {
-                        preparedStatement.setString(1, resume.getUuid());
-                        preparedStatement.setString(2, resume.getFullName());
-                        preparedStatement.execute();
-                        // Такой код не проходит, т.к. обновление записи как будто происходит.
-                        //if (preparedStatement.executeUpdate() < 1) {
-                        //    throw new ExistStorageException(resume.getUuid());
-                        //}
-                    } catch (SQLException e) {
-                        // А такой всегда добавляет типа запись уже есть, даже если это неправда.
-                        //тут нужно анализировать код исключения?
-                        throw new ExistStorageException(resume.getUuid(), e);
-                    }
+                    preparedStatement.setString(1, resume.getUuid());
+                    preparedStatement.setString(2, resume.getFullName());
+                    preparedStatement.execute();
 
                     return null;
                 },
