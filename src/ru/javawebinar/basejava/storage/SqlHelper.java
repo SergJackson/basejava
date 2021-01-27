@@ -9,22 +9,24 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SqlHelper {
-    public final ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
 
     public SqlHelper(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
-     }
-
-    public interface SqlCode<T> {
-        T exe(PreparedStatement preparedStatement) throws SQLException;
     }
 
-    public <T> T exe(SqlCode<T> code, String sql) {
+    public interface SqlExecute<T> {
+        T execute(PreparedStatement preparedStatement) throws SQLException;
+    }
+
+    public <T> T execute(String sql, SqlExecute<T> execute) {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            return code.exe(ps);
+            return execute.execute(ps);
         } catch (SQLException e) {
-            if (e.getMessage().indexOf("duplicate key value") > 0) {
+            String sss = e.getSQLState();
+            System.out.println(sss);
+            if (e.getSQLState().equals("23505")) {
                 throw new ExistStorageException("", e);
             }
             throw new StorageException(e);
