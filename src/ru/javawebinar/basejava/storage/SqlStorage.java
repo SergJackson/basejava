@@ -24,7 +24,7 @@ public class SqlStorage implements Storage {
     public void clear() {
         sqlHelper.execute(
                 "DELETE FROM resume",
-                (SqlHelper.SqlExecute<Object>) PreparedStatement::execute);
+                PreparedStatement::execute);
     }
 
     @Override
@@ -32,11 +32,11 @@ public class SqlStorage implements Storage {
         sqlHelper.execute(
                 "UPDATE resume SET full_name =? WHERE uuid =?",
                 preparedStatement -> {
+                    String uuid = resume.getUuid();
                     preparedStatement.setString(1, resume.getFullName());
-                    preparedStatement.setString(2, resume.getUuid());
-                    preparedStatement.executeUpdate();
-                    if (preparedStatement.executeUpdate() < 1) {
-                        throw new NotExistStorageException(resume.getUuid());
+                    preparedStatement.setString(2, uuid);
+                    if (preparedStatement.executeUpdate() == 0) {
+                        throw new NotExistStorageException(uuid);
                     }
                     return null;
                 });
@@ -49,7 +49,7 @@ public class SqlStorage implements Storage {
                 preparedStatement -> {
                     preparedStatement.setString(1, resume.getUuid());
                     preparedStatement.setString(2, resume.getFullName());
-                    preparedStatement.executeUpdate();
+                    preparedStatement.execute();
                     return null;
                 });
     }
@@ -74,8 +74,7 @@ public class SqlStorage implements Storage {
                 "DELETE FROM resume WHERE uuid =?",
                 preparedStatement -> {
                     preparedStatement.setString(1, uuid);
-                    preparedStatement.execute();
-                    if (preparedStatement.executeUpdate() < 1) {
+                    if (preparedStatement.executeUpdate() == 0) {
                         throw new NotExistStorageException(uuid);
                     }
                     return null;
@@ -105,9 +104,7 @@ public class SqlStorage implements Storage {
                 "SELECT COUNT(*) as cnt FROM resume",
                 preparedStatement -> {
                     ResultSet rs = preparedStatement.executeQuery();
-                    if (!rs.next()) {
-                        throw new NotExistStorageException("DB is empty");
-                    }
+                    rs.next();
                     return rs.getInt("cnt");
                 });
     }

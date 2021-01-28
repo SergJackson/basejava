@@ -15,11 +15,7 @@ public class SqlHelper {
         this.connectionFactory = connectionFactory;
     }
 
-    public interface SqlExecute<T> {
-        T execute(PreparedStatement preparedStatement) throws SQLException;
-    }
-
-    public <T> T execute(String sql, SqlExecute<T> execute) {
+    public <T> T execute(String sql, SqlExecutor<T> execute) {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             return execute.execute(ps);
@@ -31,6 +27,10 @@ public class SqlHelper {
             }
             throw new StorageException(e);
         }
+    }
+
+    public interface SqlExecutor<T> {
+        T execute(PreparedStatement preparedStatement) throws SQLException;
     }
 
 }
