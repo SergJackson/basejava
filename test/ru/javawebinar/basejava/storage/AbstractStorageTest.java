@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static ru.javawebinar.basejava.ResumeTestData.genResumeTest;
@@ -20,10 +21,10 @@ public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
     protected Storage storage;
 
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
 
     protected static final Resume RESUME_1;
     protected static final Resume RESUME_2;
@@ -37,7 +38,8 @@ public abstract class AbstractStorageTest {
         RESUME_3 = new Resume(UUID_3, "FullName3");
         RESUME_4 = new Resume(UUID_4, "FullName4");
 */
-        RESUME_1 = genResumeTest(UUID_1, "FullName1");
+        RESUME_1 = new Resume(UUID_1, "FullName1");
+        //RESUME_1 = genResumeTest(UUID_1, "FullName1");
         RESUME_2 = genResumeTest(UUID_2, "FullName2");
         RESUME_3 = genResumeTest(UUID_3, "FullName3");
         RESUME_4 = genResumeTest(UUID_4, "FullName4");
