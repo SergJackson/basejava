@@ -227,7 +227,7 @@ public class ResumeTestData {
         resume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
         resume.setContact(ContactType.STATCKOVERFLOW, "https://stackoverflow.com/users/548473");
         resume.setContact(ContactType.HOME_PAGE, "http://gkislin.ru/");
-/*
+
         // Fill contents
         resume.setSection(
                 SectionType.OBJECTIVE,
@@ -259,6 +259,7 @@ public class ResumeTestData {
                         )
                 )
         );
+        /*
         resume.setSection(
                 SectionType.EXPERIENCE,
                 new OrganizationSection(
