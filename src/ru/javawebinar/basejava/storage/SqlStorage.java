@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import com.sun.deploy.util.StringUtils;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.*;
@@ -13,11 +12,10 @@ public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
 
     public SqlStorage() {
-        // Не работает WEB без подгрузки драйвера БД
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(
                 Config.get().getDbUrl(),
@@ -79,7 +77,7 @@ public class SqlStorage implements Storage {
                 if (!rs.next()) {
                     throw new NotExistStorageException(uuid);
                 }
-                resume = new Resume(uuid, rs.getString("full_name").trim());
+                resume = new Resume(uuid, rs.getString("full_name"));
             }
             try (PreparedStatement preparedStatement = conn.prepareStatement("" +
                     "  SELECT * FROM contact WHERE resume_uuid =?")) {
@@ -165,14 +163,16 @@ public class SqlStorage implements Storage {
     }
 
     private void insertContacts(Connection connection, Resume resume) throws SQLException {
-        try (PreparedStatement ps = connection.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
-            for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
-                ps.setString(1, resume.getUuid());
-                ps.setString(2, e.getKey().name());
-                ps.setString(3, e.getValue());
-                ps.addBatch();
+        if (resume.getContacts().size() > 0) {
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
+                for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
+                    ps.setString(1, resume.getUuid());
+                    ps.setString(2, e.getKey().name());
+                    ps.setString(3, e.getValue());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
             }
-            ps.executeBatch();
         }
     }
 
@@ -184,26 +184,28 @@ public class SqlStorage implements Storage {
     }
 
     private void insertSections(Connection connection, Resume resume) throws SQLException {
-        try (PreparedStatement ps = connection.prepareStatement("INSERT INTO section (resume_uuid, type, content) VALUES (?,?,?)")) {
-            for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
-                SectionType type = e.getKey();
-                String content = null;
-                switch (type) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        content = ((SingleLineSection) e.getValue()).getContent();
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        content = StringUtils.join(((ListSection) e.getValue()).getContent(), "\n");
-                        break;
+        if (resume.getSections().size() > 0) {
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO section (resume_uuid, type, content) VALUES (?,?,?)")) {
+                for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
+                    SectionType type = e.getKey();
+                    String content = null;
+                    switch (type) {
+                        case PERSONAL:
+                        case OBJECTIVE:
+                            content = String.join("\n",((SingleLineSection) e.getValue()).getContent());
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            content = String.join("\n",(((ListSection) e.getValue()).getContent()));
+                            break;
+                    }
+                    ps.setString(1, resume.getUuid());
+                    ps.setString(2, type.name());
+                    ps.setString(3, content);
+                    ps.addBatch();
                 }
-                ps.setString(1, resume.getUuid());
-                ps.setString(2, type.name());
-                ps.setString(3, content);
-                ps.addBatch();
+                ps.executeBatch();
             }
-            ps.executeBatch();
         }
     }
 
