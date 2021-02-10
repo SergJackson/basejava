@@ -259,7 +259,7 @@ public class ResumeTestData {
                         )
                 )
         );
-        /*
+
         resume.setSection(
                 SectionType.EXPERIENCE,
                 new OrganizationSection(
@@ -313,7 +313,7 @@ public class ResumeTestData {
                         )
                 )
         );
-        */
+
         return resume;
     }
 

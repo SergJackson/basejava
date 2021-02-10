@@ -40,6 +40,10 @@ public class Resume implements Comparable<Resume>, Serializable {
         return fullName;
     }
 
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }

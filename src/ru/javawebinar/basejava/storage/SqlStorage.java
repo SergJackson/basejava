@@ -2,25 +2,33 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.model.AbstractSection;
+import ru.javawebinar.basejava.model.ContactType;
+import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.SectionType;
 import ru.javawebinar.basejava.sql.SqlHelper;
+import ru.javawebinar.basejava.util.JsonParser;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
 
     public SqlStorage() {
+        this(Config.get().getDbUrl(), Config.get().getDbUser(), Config.get().getDbPassword());
+    }
+
+    public SqlStorage(String url, String user, String password) {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
-        sqlHelper = new SqlHelper(() -> DriverManager.getConnection(
-                Config.get().getDbUrl(),
-                Config.get().getDbUser(),
-                Config.get().getDbPassword()));
+        sqlHelper = new SqlHelper(() -> DriverManager.getConnection(url, user, password));
     }
 
     @Override
@@ -156,10 +164,7 @@ public class SqlStorage implements Storage {
     }
 
     private void deleteContacts(Connection connection, String uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM contact WHERE resume_uuid =?")) {
-            preparedStatement.setString(1, uuid);
-            preparedStatement.execute();
-        }
+        deleteAttributes(connection, uuid, "DELETE FROM contact WHERE resume_uuid =?");
     }
 
     private void insertContacts(Connection connection, Resume resume) throws SQLException {
@@ -177,7 +182,11 @@ public class SqlStorage implements Storage {
     }
 
     private void deleteSections(Connection connection, String uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM section WHERE resume_uuid =?")) {
+        deleteAttributes(connection, uuid, "DELETE FROM section WHERE resume_uuid =?");
+    }
+
+    private void deleteAttributes(Connection connection, String uuid, String sql) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, uuid);
             preparedStatement.execute();
         }
@@ -187,21 +196,10 @@ public class SqlStorage implements Storage {
         if (resume.getSections().size() > 0) {
             try (PreparedStatement ps = connection.prepareStatement("INSERT INTO section (resume_uuid, type, content) VALUES (?,?,?)")) {
                 for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
-                    SectionType type = e.getKey();
-                    String content = null;
-                    switch (type) {
-                        case PERSONAL:
-                        case OBJECTIVE:
-                            content = String.join("\n",((SingleLineSection) e.getValue()).getContent());
-                            break;
-                        case ACHIEVEMENT:
-                        case QUALIFICATIONS:
-                            content = String.join("\n",(((ListSection) e.getValue()).getContent()));
-                            break;
-                    }
                     ps.setString(1, resume.getUuid());
-                    ps.setString(2, type.name());
-                    ps.setString(3, content);
+                    ps.setString(2, e.getKey().name());
+                    AbstractSection section = e.getValue();
+                    ps.setString(3, JsonParser.write(section, AbstractSection.class));
                     ps.addBatch();
                 }
                 ps.executeBatch();
@@ -220,18 +218,7 @@ public class SqlStorage implements Storage {
         String content = rs.getString("content");
         if (content != null) {
             SectionType sectionType = SectionType.valueOf(rs.getString("type"));
-            AbstractSection section = null;
-            switch (sectionType) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    section = new SingleLineSection(content);
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    section = new ListSection(Arrays.asList(content.split("\n")));
-                    break;
-            }
-            resume.setSection(sectionType, section);
+            resume.setSection(sectionType, JsonParser.read(content, AbstractSection.class));
         }
     }
 

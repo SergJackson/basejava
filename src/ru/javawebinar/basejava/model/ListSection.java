@@ -21,6 +21,11 @@ public class ListSection extends AbstractSection {
     }
 
     @Override
+    public String toHtml() {
+        return content.size() > 0 ? "<ul>\n<li>" + String.join("</li>\n<li>", content) + " </li>\n</ul>" : "";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
