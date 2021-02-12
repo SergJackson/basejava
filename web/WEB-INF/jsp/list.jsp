@@ -13,7 +13,7 @@
 <section>
     <table id="t01" border="1" cellpadding="8" cellspacing="0">
         <tr>
-            <th>Имя</th>
+            <th>Имя <a href="resume?uuid=0&action=add"> <img src="img/add.png" title="Добавить резюме"> </a></th>
             <th>Email</th>
             <th>Удалить</th>
             <th>Редактировать</th>

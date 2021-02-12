@@ -1,6 +1,5 @@
-<%@ page import="ru.javawebinar.basejava.model.ContactType" %>
-<%@ page import="ru.javawebinar.basejava.model.OrganizationSection" %>
-<%@ page import="ru.javawebinar.basejava.model.SectionType" %>
+<%@ page import="ru.javawebinar.basejava.model.*" %>
+<%@ page import="java.time.LocalDate" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -49,7 +48,12 @@
                         <dt>${typeSection.title}</dt>
                         <dd>
                             <div>
+
                                 <c:set var="organisations" value="${resume.sections.get(typeSection)}"/>
+                                <c:if test="${empty organisations}">
+                                    <c:set var="organisations"
+                                           value="<%=new OrganizationSection(new Organization(\"\",null, new Experience(LocalDate.now(), LocalDate.now(), \"\", null)))%>"/>
+                                </c:if>
                                 <jsp:useBean id="organisations" type="ru.javawebinar.basejava.model.AbstractSection"/>
                                 <c:forEach var="organisation"
                                            items="<%=((OrganizationSection)organisations).getContent()%>"

@@ -1,8 +1,7 @@
 package ru.javawebinar.basejava.web;
 
 import ru.javawebinar.basejava.Config;
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.Storage;
 
 import javax.servlet.ServletConfig;
@@ -11,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage; // = Config.get().getStorage();
@@ -25,6 +27,10 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
+        if (uuid.equals("")) {
+            uuid = UUID.randomUUID().toString();
+            storage.save(new Resume(uuid, fullName));
+        }
         Resume r = storage.get(uuid);
         r.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
@@ -33,6 +39,35 @@ public class ResumeServlet extends HttpServlet {
                 r.setContact(type, value);
             } else {
                 r.getContacts().remove(type);
+            }
+        }
+        for (SectionType type : SectionType.values()) {
+            AbstractSection section = null;
+            String value = null;
+            switch (type) {
+                case PERSONAL:
+                case OBJECTIVE:
+                    value = request.getParameter(type.name().trim());
+                    section = new SingleLineSection(value.length() > 0 ? value : "");
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATIONS:
+                    value = request.getParameter(type.name().trim());
+                    section = new ListSection(Arrays
+                            .stream(value.split("\r\n|\n"))
+                            .filter(s -> s.trim().length() > 0)
+                            .collect(Collectors.toList()));
+                    break;
+                case EDUCATION:
+                case EXPERIENCE:
+                    section = null; //new OrganizationSection();
+                    break;
+            }
+
+            if (section != null) {
+                r.setSection(type, section);
+            } else {
+                r.getSections().remove(type);
             }
         }
         storage.update(r);
@@ -56,6 +91,9 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 r = storage.get(uuid);
+                break;
+            case "add":
+                r = new Resume("", "");
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
