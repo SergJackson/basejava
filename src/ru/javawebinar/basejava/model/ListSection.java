@@ -26,6 +26,11 @@ public class ListSection extends AbstractSection {
     }
 
     @Override
+    public String toHtmlEdit() {
+        return String.join("\n", content);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -42,6 +47,6 @@ public class ListSection extends AbstractSection {
 
     @Override
     public String toString() {
-        return String.join("\n", content);
+        return " - " + String.join("\n - ", content);
     }
 }

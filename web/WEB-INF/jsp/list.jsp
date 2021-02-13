@@ -10,10 +10,15 @@
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
+
 <section>
+    <br/>
+    <div style="border: 1px; background-color: aquamarine; width: 150px; padding: 5px; margin: 3px;">
+        <a href="resume?uuid=0&action=add"><img src="img/add.png" title="Добавить резюме"> Добавить резюме</a>
+    </div>
     <table id="t01" border="1" cellpadding="8" cellspacing="0">
         <tr>
-            <th>Имя <a href="resume?uuid=0&action=add"> <img src="img/add.png" title="Добавить резюме"> </a></th>
+            <th>Имя</th>
             <th>Email</th>
             <th>Удалить</th>
             <th>Редактировать</th>

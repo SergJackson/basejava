@@ -38,8 +38,8 @@
                 <c:when test="${typeSection == SectionType.ACHIEVEMENT || typeSection == SectionType.QUALIFICATIONS}">
                     <dl>
                         <dt>${typeSection.title}</dt>
-                        <dd><textarea rows="5" name="${typeSection.name()}"
-                                      cols="68">${resume.getSection(typeSection)}</textarea>
+                        <dd><textarea rows="5" name="${typeSection.name()}" style="text-wrap: none"
+                                      cols="68">${resume.getSection(typeSection).toHtmlEdit()}</textarea>
                         </dd>
                     </dl>
                 </c:when>
@@ -130,7 +130,7 @@
         -->
         <hr>
         <button type="submit">Сохранить</button>
-        <button onclick="window.history.back()">Отменить</button>
+        <button type="reset" onclick="window.history.back()">Отменить</button>
     </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>

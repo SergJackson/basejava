@@ -60,6 +60,11 @@ public class OrganizationSection extends AbstractSection {
         return result + "</table>";
     }
 
+    @Override
+    public String toHtmlEdit() {
+        return toHtml(); // Maybe it will change
+    }
+
     private String getMonthYearRU(LocalDate date) {
         Month month = date.getMonth();
         Locale localeRu = new Locale("ru", "RU");
