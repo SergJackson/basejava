@@ -48,7 +48,6 @@
                         <dt>${typeSection.title}</dt>
                         <dd>
                             <div>
-
                                 <c:set var="organisations" value="${resume.sections.get(typeSection)}"/>
                                 <c:if test="${empty organisations}">
                                     <c:set var="organisations"
@@ -59,18 +58,16 @@
                                            items="<%=((OrganizationSection)organisations).getContent()%>"
                                            varStatus="number_org">
                                     <dl>
-                                        <dd>
-                                        <dd>
                                         <dt>Организация</dt>
                                         <dd>
-                                            <input type="text" name="${typeSection.name()}_org_${number_org.index}_name"
-                                                   size=20%
+                                            <input type="text" name="${typeSection.name()}_name"
+                                                   size=50%
                                                    value="${organisation.link.name}">
                                         </dd>
                                         <dt>Сайт</dt>
                                         <dd>
-                                            <input type="text" name="${typeSection.name()}_org_${number_org.index}_url"
-                                                   size=20%
+                                            <input type="text" name="${typeSection.name()}_url"
+                                                   size=50%
                                                    value="${organisation.link.url}">
                                         </dd>
                                     </dl>
@@ -78,38 +75,31 @@
                                         <dd>
                                             <div>
                                                 <c:forEach var="experience"
-                                                           items="${organisation.experiences}"
-                                                           varStatus="number_exp">
+                                                           items="${organisation.experiences}">
                                                     <dl>
                                                         <dd>
-                                                        <dd>
-                                                        <dt>C</dt>
-                                                        <dd>
-                                                            <input type="text"
-                                                                   name="${typeSection.name()}_org_${number_org.index}_exp_${number_exp.index}_startDate"
-                                                                   size=20%
-                                                                   value="${experience.startDate}">
-                                                        </dd>
-                                                        <dt>По</dt>
-                                                        <dd>
-                                                            <input type="text"
-                                                                   name="${typeSection.name()}_org_${number_org.index}_exp_${number_exp.index}_stopDate"
-                                                                   size=20%
-                                                                   value="${experience.endDate}">
-                                                        </dd>
-                                                        <dt>Должность/Специальность</dt>
-                                                        <dd>
-                                                            <input type="text"
-                                                                   name="${typeSection.name()}_org_${number_org.index}_exp_${number_exp.index}_title"
-                                                                   size=20%
-                                                                   value="${experience.title}">
-                                                        </dd>
-                                                        <dt>Описание</dt>
-                                                        <dd>
-                                                            <input type="text"
-                                                                   name="${typeSection.name()}_org_${number_org.index}_exp_${number_exp.index}_description"
-                                                                   size=20%
-                                                                   value="${experience.description}">
+                                                            <div style="margin-left: 150px;">
+                                                                C <input type="text"
+                                                                         name="${typeSection.name()}_${number_org.index}_startDate"
+                                                                         size=10
+                                                                         value="${experience.startDate}">
+
+                                                                По <input type="text"
+                                                                          name="${typeSection.name()}_${number_org.index}_endDate"
+                                                                          size=10
+                                                                          value="${experience.endDate}">
+                                                                <br>
+                                                                Должность <input type="text"
+                                                                                 name="${typeSection.name()}_${number_org.index}_title"
+                                                                                 size=40%
+                                                                                 value="${experience.title}">
+                                                                <br>
+                                                                Описание <input type="text"
+                                                                                name="${typeSection.name()}_${number_org.index}_description"
+                                                                                size=40%
+                                                                                value="${experience.description}">
+
+                                                            </div>
                                                         </dd>
                                                     </dl>
                                                 </c:forEach>

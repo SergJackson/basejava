@@ -21,6 +21,11 @@ public class Organization implements Serializable {
         this(new Link(name, url), Arrays.asList(experiences));
     }
 
+    public Organization(Link link, List<Experience> experiences) {
+        this.homePage = link;
+        this.experiences = experiences;
+    }
+
     public Link getLink() {
         return homePage;
     }
@@ -29,11 +34,9 @@ public class Organization implements Serializable {
         return experiences;
     }
 
-    public Organization(Link link, List<Experience> experiences) {
-        this.homePage = link;
+    public void setExperiences(List<Experience> experiences) {
         this.experiences = experiences;
     }
-
 
     @Override
     public boolean equals(Object o) {

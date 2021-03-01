@@ -10,17 +10,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage; // = Config.get().getStorage();
+    private Organization newOrganization;
+    private Experience newExperience;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = Config.get().getStorage();
+        newExperience = new Experience();
+        newOrganization = new Organization("", "", newExperience);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -48,19 +55,43 @@ public class ResumeServlet extends HttpServlet {
                 case PERSONAL:
                 case OBJECTIVE:
                     value = request.getParameter(type.name().trim());
-                    section = new SingleLineSection(value.length() > 0 ? value : "");
+                    section = value.length() > 0 ? new SingleLineSection(value) : null;
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
                     value = request.getParameter(type.name().trim());
-                    section = new ListSection(Arrays
+                    List<String> content = Arrays
                             .stream(value.split("\r\n|\n"))
                             .filter(s -> s.trim().length() > 0)
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList());
+                    section = content.size() > 0 ? new ListSection(content) : null;
                     break;
                 case EDUCATION:
                 case EXPERIENCE:
-                    section = null; //new OrganizationSection();
+                    List<Organization> organizations = new ArrayList<>();
+                    String[] names = request.getParameterValues(type.name() + "_name");
+                    String[] urls = request.getParameterValues(type.name() + "_url");
+                    for (int i = 0; i < names.length; i++) {
+                        String nameParam = type.name() + "_" + i;
+                        if (names[i].trim().length() > 0) {
+                            String[] startDates = request.getParameterValues(nameParam + "_startDate");
+                            String[] endDates = request.getParameterValues(nameParam + "_endDate");
+                            String[] titles = request.getParameterValues(nameParam + "_title");
+                            String[] descriptions = request.getParameterValues(nameParam + "_description");
+                            List<Experience> experiences = new ArrayList<>();
+                            for (int x = 0; x < startDates.length; x++) {
+                                if (startDates[x].trim().length() > 0 && titles[x].trim().length() > 0) {
+                                    experiences.add(new Experience(
+                                            LocalDate.parse(startDates[x]),
+                                            LocalDate.parse(endDates[x]),
+                                            titles[x],
+                                            descriptions[x]));
+                                }
+                            }
+                            organizations.add(new Organization(new Link(names[i], urls[i]), experiences));
+                        }
+                    }
+                    section = organizations.size() > 0 ? new OrganizationSection(organizations) : null;
                     break;
             }
 
@@ -89,8 +120,31 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "view":
+                r = storage.get(uuid);
+                break;
             case "edit":
                 r = storage.get(uuid);
+                for (SectionType sectionType : Arrays.asList(SectionType.EDUCATION, SectionType.EXPERIENCE)) {
+                    List<Organization> listEducations = new ArrayList<>();
+                    listEducations.add(0, newOrganization);
+                    OrganizationSection orgSection = (OrganizationSection) r.getSection(sectionType);
+                    if (orgSection != null) {
+                        for (Organization org : orgSection.getContent()) {
+                            if (org != null) {
+                                List<Experience> listExperiences = new ArrayList<>();
+                                listExperiences.add(0, newExperience);
+                                for (Experience exp : org.getExperiences()) {
+                                    if (exp != null) {
+                                        listExperiences.add(exp);
+                                    }
+                                }
+                                org.setExperiences(listExperiences);
+                                listEducations.add(org);
+                            }
+                        }
+                    }
+                    r.setSection(sectionType, new OrganizationSection(listEducations));
+                }
                 break;
             case "add":
                 r = new Resume("", "");
