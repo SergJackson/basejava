@@ -1,4 +1,5 @@
 <%@ page import="ru.javawebinar.basejava.model.*" %>
+<%@ page import="ru.javawebinar.basejava.util.DateUtil" %>
 <%@ page import="java.time.LocalDate" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -46,70 +47,74 @@
                 <c:when test="${typeSection == SectionType.EXPERIENCE || typeSection == SectionType.EDUCATION}">
                     <dl>
                         <dt>${typeSection.title}</dt>
-                        <dd>
-                            <div>
-                                <c:set var="organisations" value="${resume.sections.get(typeSection)}"/>
-                                <c:if test="${empty organisations}">
-                                    <c:set var="organisations"
-                                           value="<%=new OrganizationSection(new Organization(\"\",null, new Experience(LocalDate.now(), LocalDate.now(), \"\", null)))%>"/>
-                                </c:if>
-                                <jsp:useBean id="organisations" type="ru.javawebinar.basejava.model.AbstractSection"/>
-                                <c:forEach var="organisation"
-                                           items="<%=((OrganizationSection)organisations).getContent()%>"
-                                           varStatus="number_org">
+                    </dl>
+                    <div style="margin-left: 30px;">
+                        <c:set var="organisations" value="${resume.sections.get(typeSection)}"/>
+                        <c:if test="${empty organisations}">
+                            <c:set var="organisations"
+                                   value="<%=new OrganizationSection(new Organization(\"\",null, new Experience(LocalDate.now(), LocalDate.now(), \"\", null)))%>"/>
+                        </c:if>
+                        <jsp:useBean id="organisations" type="ru.javawebinar.basejava.model.AbstractSection"/>
+                        <c:forEach var="organisation"
+                                   items="<%=((OrganizationSection)organisations).getContent()%>"
+                                   varStatus="number_org">
+                            <dl>
+                                <dt>Организация</dt>
+                                <dd>
+                                    <input type="text" name="${typeSection.name()}_name"
+                                           size=50%
+                                           value="${organisation.link.name}">
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>Сайт</dt>
+                                <dd>
+                                    <input type="text" name="${typeSection.name()}_url"
+                                           size=50%
+                                           value="${organisation.link.url}">
+                                </dd>
+                            </dl>
+                            <br>
+                            <div style="margin-left: 30px">
+                                <c:forEach var="experience"
+                                           items="${organisation.experiences}">
+                                    <jsp:useBean id="experience" type="ru.javawebinar.basejava.model.Experience"/>
                                     <dl>
-                                        <dt>Организация</dt>
-                                        <dd>
-                                            <input type="text" name="${typeSection.name()}_name"
-                                                   size=50%
-                                                   value="${organisation.link.name}">
-                                        </dd>
-                                        <dt>Сайт</dt>
-                                        <dd>
-                                            <input type="text" name="${typeSection.name()}_url"
-                                                   size=50%
-                                                   value="${organisation.link.url}">
+                                        <dt>Начальная дата:</dt>
+                                        <dd><input type="text"
+                                                   name="${typeSection.name()}_${number_org.index}_startDate"
+                                                   size=10
+                                                   value="<%=DateUtil.format(experience.getStartDate())%>" placeholder="MM/yyyy">
+                                    </dl>
+                                    <dl>
+                                        <dt>Конечная дата:</dt>
+                                        <dd><input type="text"
+                                                   name="${typeSection.name()}_${number_org.index}_endDate"
+                                                   size=10
+                                                   value="<%=DateUtil.format(experience.getEndDate())%>" placeholder="MM/yyyy">
                                         </dd>
                                     </dl>
                                     <dl>
-                                        <dd>
-                                            <div>
-                                                <c:forEach var="experience"
-                                                           items="${organisation.experiences}">
-                                                    <dl>
-                                                        <dd>
-                                                            <div style="margin-left: 150px;">
-                                                                C <input type="text"
-                                                                         name="${typeSection.name()}_${number_org.index}_startDate"
-                                                                         size=10
-                                                                         value="${experience.startDate}">
-
-                                                                По <input type="text"
-                                                                          name="${typeSection.name()}_${number_org.index}_endDate"
-                                                                          size=10
-                                                                          value="${experience.endDate}">
-                                                                <br>
-                                                                Должность <input type="text"
-                                                                                 name="${typeSection.name()}_${number_org.index}_title"
-                                                                                 size=40%
-                                                                                 value="${experience.title}">
-                                                                <br>
-                                                                Описание <input type="text"
-                                                                                name="${typeSection.name()}_${number_org.index}_description"
-                                                                                size=40%
-                                                                                value="${experience.description}">
-
-                                                            </div>
-                                                        </dd>
-                                                    </dl>
-                                                </c:forEach>
-                                            </div>
+                                        <dt>Должность:</dt>
+                                        <dd><input type="text"
+                                                   name="${typeSection.name()}_${number_org.index}_title"
+                                                   size=40%
+                                                   value="${experience.title}">
                                         </dd>
                                     </dl>
+                                    <dl>
+                                        <dt>Описание:</dt>
+                                        <dd><input type="text"
+                                                   name="${typeSection.name()}_${number_org.index}_description"
+                                                   size=40%
+                                                   value="${experience.description}">
+                                        </dd>
+                                    </dl>
+                                    <br>
                                 </c:forEach>
                             </div>
-                        </dd>
-                    </dl>
+                        </c:forEach>
+                    </div>
                 </c:when>
             </c:choose>
         </c:forEach>

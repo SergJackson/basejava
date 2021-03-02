@@ -3,6 +3,7 @@ package ru.javawebinar.basejava.web;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.util.DateUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,16 +18,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
-    private Storage storage; // = Config.get().getStorage();
-    private Organization newOrganization;
-    private Experience newExperience;
+    private Storage storage;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = Config.get().getStorage();
-        newExperience = new Experience();
-        newOrganization = new Organization("", "", newExperience);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -82,8 +78,8 @@ public class ResumeServlet extends HttpServlet {
                             for (int x = 0; x < startDates.length; x++) {
                                 if (startDates[x].trim().length() > 0 && titles[x].trim().length() > 0) {
                                     experiences.add(new Experience(
-                                            LocalDate.parse(startDates[x]),
-                                            LocalDate.parse(endDates[x]),
+                                            DateUtil.parse(startDates[x]),
+                                            DateUtil.parse(endDates[x]),
                                             titles[x],
                                             descriptions[x]));
                                 }
@@ -126,13 +122,13 @@ public class ResumeServlet extends HttpServlet {
                 r = storage.get(uuid);
                 for (SectionType sectionType : Arrays.asList(SectionType.EDUCATION, SectionType.EXPERIENCE)) {
                     List<Organization> listEducations = new ArrayList<>();
-                    listEducations.add(0, newOrganization);
+                    listEducations.add(0, Organization.EMPTY);
                     OrganizationSection orgSection = (OrganizationSection) r.getSection(sectionType);
                     if (orgSection != null) {
                         for (Organization org : orgSection.getContent()) {
                             if (org != null) {
                                 List<Experience> listExperiences = new ArrayList<>();
-                                listExperiences.add(0, newExperience);
+                                listExperiences.add(0, Experience.EMPTY);
                                 for (Experience exp : org.getExperiences()) {
                                     if (exp != null) {
                                         listExperiences.add(exp);
@@ -147,7 +143,7 @@ public class ResumeServlet extends HttpServlet {
                 }
                 break;
             case "add":
-                r = new Resume("", "");
+                r = Resume.EMPTY;
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");

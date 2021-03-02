@@ -14,6 +14,8 @@ public class Organization implements Serializable {
     private Link homePage;
     private List<Experience> experiences = new ArrayList<>();
 
+    public static final Organization EMPTY = new Organization("", "", Experience.EMPTY);
+
     public Organization() {
     }
 

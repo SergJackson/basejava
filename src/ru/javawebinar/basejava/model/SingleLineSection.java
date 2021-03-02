@@ -4,6 +4,8 @@ public class SingleLineSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
     private String content;
 
+    public static final SingleLineSection EMPTY = new SingleLineSection("");
+
     public SingleLineSection() {
     }
 

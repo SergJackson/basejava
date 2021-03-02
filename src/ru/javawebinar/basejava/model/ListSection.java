@@ -3,10 +3,14 @@ package ru.javawebinar.basejava.model;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.EMPTY_LIST;
+
 public class ListSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
 
     private List<String> content;
+
+    public static final ListSection EMPTY = new ListSection(EMPTY_LIST);
 
     public ListSection() {
     }
